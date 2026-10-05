@@ -9,33 +9,46 @@ const images = [
   {
     src: "/assets/gallery/1.webp",
     alt: "Graduation photography",
+    man: "Dimas",
+    woman: "Siti",
   },
   {
     src: "/assets/gallery/2.webp",
     alt: "Graduation photography",
+    man: "Rian",
+    woman: "Nadia",
   },
   {
     src: "/assets/gallery/3.webp",
     alt: "Graduation photography",
+    man: "Kevin",
+    woman: "Jessica",
   },
   {
     src: "/assets/gallery/4.webp",
     alt: "Graduation photography",
+    man: "Fajar",
+    woman: "Anisa",
   },
   {
     src: "/assets/gallery/5.webp",
     alt: "Graduation photography",
+    man: "Alex",
+    woman: "Sarah",
   },
   {
     src: "/assets/gallery/6.webp",
     alt: "Graduation photography",
+    man: "William",
+    woman: "Anya",
   },
 ];
 
-export default function PortfolioSection() {
+export default function WeddingSection() {
   // State untuk mengontrol jumlah kartu & tinggi responsif
   const [visibleCount, setVisibleCount] = useState(4);
   const [frameHeight, setFrameHeight] = useState(450);
+  const [photoExtraWidth, setPhotoExtraWidth] = useState(240);
 
   useEffect(() => {
     const handleResize = () => {
@@ -45,14 +58,17 @@ export default function PortfolioSection() {
         // Layar HP: Tampilkan 1.2 kartu agar ukurannya proporsional & gagah
         setVisibleCount(1.2);
         setFrameHeight(380);
+        setPhotoExtraWidth(150);
       } else if (width < 1050) {
         // Layar Tablet: Tampilkan 3 kartu
         setVisibleCount(3);
         setFrameHeight(420);
+        setPhotoExtraWidth(200);
       } else {
         // Layar Desktop
-        setVisibleCount(4);
-        setFrameHeight(450);
+        setVisibleCount(3);
+        setFrameHeight(600);
+        setPhotoExtraWidth(240);
       }
     };
 
@@ -74,21 +90,21 @@ export default function PortfolioSection() {
   };
 
   return (
-    <div className="flex min-h-[100dvh] w-full flex-col bg-white overflow-hidden">
+    <div className="flex min-h-[80dvh] w-full flex-col bg-primary gap-8 pt-28 overflow-hidden">
       <motion.div
-        className="flex h-8 shrink-0 items-center justify-center"
+        className="flex h-fit shrink-0 items-center justify-center"
         initial="hidden"
         animate="visible"
         variants={editorialReveal}
         custom={0}
       >
-        <h2 className="font-bold text-black text-2xl lg:text-3xl">
-          Moments, as they happen.
+        <h2 className=" text-3xl md:text-5xl font-normal text-second text-center">
+          Weddings We&apos;ve Created{" "}
         </h2>
       </motion.div>
 
       <motion.div
-        className="flex flex-1 items-center px-4 md:px-8 overflow-hidden"
+        className="flex flex-1 items-center  px-4 md:px-8 overflow-hidden"
         initial="hidden"
         animate="visible"
         variants={editorialReveal}
@@ -102,7 +118,10 @@ export default function PortfolioSection() {
             <ParallaxPhotoCard
               photoSrc={item.src}
               index={index}
+              man={item.man}
+              woman={item.woman}
               meta={meta}
+              photoExtraWidth={photoExtraWidth}
               frameHeight={frameHeight} // Passing tinggi dinamis
             />
           )}

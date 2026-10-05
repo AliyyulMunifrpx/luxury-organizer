@@ -37,6 +37,10 @@ export default function CircularCarousel({
       ? (containerWidth - gap * (safeVisibleCount - 1)) / safeVisibleCount
       : 0;
 
+  // OFFEST UNTUK MEMBUAT KARTU AKTIF BERADA DI TENGAH (SISA INTIPAN TERBAGI SEIMBANG KIRI & KANAN)
+  const centerOffset =
+    containerWidth > 0 && itemWidth > 0 ? (containerWidth - itemWidth) / 2 : 0;
+
   const step = itemWidth + gap;
   const totalLoopWidth = items.length * step;
 
@@ -65,8 +69,8 @@ export default function CircularCarousel({
     if (!containerWidth || !items.length || !step) return;
 
     offsetRef.current = baseOffset;
-    x.set(-baseOffset);
-  }, [containerWidth, step, baseOffset, items.length, x]);
+    x.set(-baseOffset + centerOffset);
+  }, [containerWidth, step, baseOffset, items.length, x, centerOffset]);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -85,13 +89,13 @@ export default function CircularCarousel({
     isAnimatingRef.current = true;
     offsetRef.current = targetOffset;
 
-    animate(x, -targetOffset, {
+    animate(x, -targetOffset + centerOffset, {
       duration: 0.7,
       ease: [0.25, 1, 0.5, 1],
       onComplete: () => {
         const normalized = wrapOffset(offsetRef.current);
         offsetRef.current = normalized;
-        x.set(-normalized);
+        x.set(-normalized + centerOffset);
         isAnimatingRef.current = false;
       },
     });
@@ -152,7 +156,6 @@ export default function CircularCarousel({
 
     const delta = event.clientX - dragStartX.current;
 
-    // Jika digeser lebih dari 8px, tandai sebagai DRAG
     if (Math.abs(delta) > 8) {
       hasDragged.current = true;
     }
@@ -169,14 +172,14 @@ export default function CircularCarousel({
     }
 
     offsetRef.current = currentOffset;
-    x.set(-currentOffset);
+    x.set(-currentOffset + centerOffset);
   };
 
   const handlePointerUp = (event) => {
     if (!dragging.current) return;
     dragging.current = false;
 
-    // BILA HANYA DI-TAP / DI-KLIK (TIDAK DIDEGSER)
+    // BILA HANYA DI-TAP / DI-KLIK
     if (!hasDragged.current) {
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
@@ -184,15 +187,15 @@ export default function CircularCarousel({
         const halfWidth = rect.width / 2;
 
         if (clickX < halfWidth) {
-          previous(); // Klik area kiri -> Previous (<)
+          previous();
         } else {
-          next(); // Klik area kanan -> Next (>)
+          next();
         }
       }
       return;
     }
 
-    // BILA USER MEMANG NGE-DRAG / SWIPE
+    // BILA USER MEMANG SWIPE / NGE-DRAG
     if (!step) return;
 
     const velocity = x.getVelocity();
@@ -205,16 +208,17 @@ export default function CircularCarousel({
       timeConstant: 260,
       restDelta: 0.5,
       modifyTarget: (target) => {
-        const targetOffset = -target;
+        const targetOffset = -(target - centerOffset);
         const snappedStepIndex = Math.round(targetOffset / step);
         let snappedOffset = snappedStepIndex * step;
 
-        return -wrapOffset(snappedOffset);
+        return -(wrapOffset(snappedOffset) - centerOffset);
       },
       onComplete: () => {
-        const finalOffset = wrapOffset(-x.get());
+        const rawOffset = -(x.get() - centerOffset);
+        const finalOffset = wrapOffset(rawOffset);
         offsetRef.current = finalOffset;
-        x.set(-finalOffset);
+        x.set(-finalOffset + centerOffset);
         isAnimatingRef.current = false;
       },
     });

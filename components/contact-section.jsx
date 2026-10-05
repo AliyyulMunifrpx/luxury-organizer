@@ -2,179 +2,273 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { information } from "../data/information.js";
+
+// 1. Parent Variant: Mengatur trigger viewport & stagger delay
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.15, // Judul, kolom info, dan form muncul berurutan
+    },
+  },
+};
+
+// 2. Child Variant: Format clipPath % konsisten & y-axis reveal
+const itemVariants = {
+  hidden: {
+    clipPath: "inset(100% 0% 0% 0%)",
+    y: 24,
+  },
+  visible: {
+    clipPath: "inset(0% 0% 0% 0%)",
+    y: 0,
+    transition: {
+      duration: 0.7,
+      ease: [0.25, 1, 0.5, 1],
+    },
+  },
+};
 
 export default function ContactSection() {
-  const PHONE_NUMBER = "6281234567890";
-
+  // STATE FORM TERPUSAT DALAM 1 OBJEK
   const [formData, setFormData] = useState({
     name: "",
-    needs: "",
-    date: "",
-    location: "",
-    notes: "",
+    phone: "",
+    weddingDate: "",
+    guestCount: "",
+    service: "Full Wedding Planning",
+    message: "",
   });
 
+  // Handler Perubahan Input
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleSendWhatsApp = (e) => {
+  // Handler Submit & Redirect WhatsApp
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    const message =
-      `Halo, saya tertarik dan ingin konsultasi:\n\n` +
-      `*Nama:* ${formData.name || "-"}\n` +
-      `*Kebutuhan:* ${formData.needs || "-"}\n` +
-      `*Tanggal:* ${formData.date || "-"}\n` +
-      `*Lokasi:* ${formData.location || "-"}\n` +
-      `*Catatan:* ${formData.notes || "-"}`;
+    const waText =
+      `Halo ${information.instagram},\n\n` +
+      `Saya ingin berkonsultasi mengenai layanan Wedding Organizer:\n\n` +
+      `• *Nama:* ${formData.name}\n` +
+      `• *No. WhatsApp:* ${formData.phone}\n` +
+      `• *Rencana Tanggal:* ${formData.weddingDate || "-"}\n` +
+      `• *Estimasi Tamu:* ${formData.guestCount || "-"}\n` +
+      `• *Layanan:* ${formData.service}\n` +
+      `• *Catatan / Pesan:* ${formData.message || "-"}\n\n` +
+      `Terima kasih!`;
 
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/${PHONE_NUMBER}?text=${encodedMessage}`;
+    const encodedText = encodeURIComponent(waText);
+    const waUrl = `https://wa.me/${information.phone}?text=${encodedText}`;
 
-    window.open(whatsappUrl, "_blank");
-  };
-
-  const editorialReveal = {
-    hidden: { clipPath: "inset(100% 0 0 0)" },
-    visible: (delay = 0) => ({
-      clipPath: "inset(0% 0 0 0)",
-      transition: {
-        duration: 0.8,
-        delay,
-        ease: [0.25, 1, 0.5, 1],
-      },
-    }),
+    window.open(waUrl, "_blank");
   };
 
   return (
-    <div className="w-full min-h-[100dvh] bg-white py-6 px-4 md:px-6 text-black flex flex-col justify-center items-center">
-      <div className="w-full max-w-3xl space-y-6">
-        {/* HEADER SECTION */}
+    <motion.section
+      className="w-full bg-primary text-white px-4 md:px-8 lg:px-24 py-28 flex flex-col items-center gap-8"
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.05 }}
+    >
+      {/* JUDUL SECTION */}
+      <motion.h2
+        variants={itemVariants}
+        className="text-3xl md:text-5xl font-normal text-second text-center"
+      >
+        Begin Your Journey
+      </motion.h2>
+
+      <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+        {/* === SISI KIRI: INFORMASI KONTAK & EDITORIAL === */}
         <motion.div
-          className="text-center space-y-2"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={editorialReveal}
-          custom={0}
+          variants={itemVariants}
+          className="lg:col-span-5 flex flex-col gap-12 overflow-hidden"
         >
-          <h2 className="font-bold text-black text-2xl lg:text-3xl">
-            Looking for something else?
-          </h2>
-          <p className="text-black text-md lg:text-lg">
-            Let us know. We’d be delighted to assist.
+          <p className="font-sans text-sm lg:text-base text-white/70 leading-relaxed">
+            We invite you to share your vision with us. Fill out the form or
+            reach out directly to schedule a private consultation with our lead
+            event directors.
           </p>
+
+          {/* DETAIL KONTAK */}
+          <div className="flex flex-col gap-8 font-sans text-sm text-white/80">
+            <div className="flex flex-col gap-2">
+              <span className="text-xs uppercase tracking-[0.2em] text-second">
+                Direct Concierge
+              </span>
+              <p className="font-serif text-lg text-white">
+                {information.phoneDisplay}
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <span className="text-xs uppercase tracking-[0.2em] text-second">
+                Email Inquiry
+              </span>
+              <p className="font-serif text-lg text-white">
+                {information.email}
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <span className="text-xs uppercase tracking-[0.2em] text-second">
+                Atelier Studio
+              </span>
+              <p className="text-white/80 leading-relaxed">
+                {information.address}
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <span className="text-xs uppercase tracking-[0.2em] text-second">
+                Instagram
+              </span>
+              <p className="text-white/80">{information.instagram}</p>
+            </div>
+          </div>
         </motion.div>
 
-        {/* FORM CONTACT */}
-        <motion.form
-          onSubmit={handleSendWhatsApp}
-          className="space-y-6 bg-white p-6 rounded-2xl border border-neutral-200 shadow-sm"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={editorialReveal}
-          custom={0.2}
+        {/* === SISI KANAN: FORM KONSULTASI (WHATSAPP REDIRECT) === */}
+        <motion.div
+          variants={itemVariants}
+          className="lg:col-span-7 bg-white/5 border border-white/10 p-4 md:p-8 lg:p-12 relative overflow-hidden"
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* NAME */}
-            <div className="space-y-2">
-              <label htmlFor="name" className="text-sm font-medium text-black">
-                Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                required
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="John Doe"
-                className="w-full px-4 py-2 bg-white border border-neutral-300 rounded-xl focus:outline-none focus:border-black transition text-black placeholder-neutral-400"
-              />
+          {/* ACCENT LINE EMAS */}
+          <div className="absolute top-0 left-0 w-full h-[2px] bg-second" />
+
+          <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+            <div className="flex flex-col gap-2">
+              <h3 className="font-serif text-2xl text-white font-normal">
+                Private Consultation Form
+              </h3>
+              <p className="font-sans text-xs text-white/60">
+                Your details will be forwarded directly to our WhatsApp
+                concierge.
+              </p>
             </div>
 
-            {/* NEEDS */}
-            <div className="space-y-2">
-              <label htmlFor="needs" className="text-sm font-medium text-black">
-                Needs
-              </label>
-              <input
-                type="text"
-                id="needs"
-                name="needs"
-                required
-                value={formData.needs}
-                onChange={handleChange}
-                placeholder="Graduation / Event / Personal Photo"
-                className="w-full px-4 py-2 bg-white border border-neutral-300 rounded-xl focus:outline-none focus:border-black transition text-black placeholder-neutral-400"
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* NAMA LENGKAP */}
+              <div className="flex flex-col gap-2">
+                <label className="font-sans text-xs uppercase tracking-widest text-second">
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  required
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="e.g. Clarissa & Raditya"
+                  className="w-full bg-primary/50 border border-white/10 px-4 py-4 text-sm text-white focus:outline-none focus:border-second transition-colors"
+                />
+              </div>
+
+              {/* NO. WHATSAPP */}
+              <div className="flex flex-col gap-2">
+                <label className="font-sans text-xs uppercase tracking-widest text-second">
+                  WhatsApp Number *
+                </label>
+                <input
+                  type="tel"
+                  name="phone"
+                  required
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder="e.g. 08123456789"
+                  className="w-full bg-primary/50 border border-white/10 px-4 py-4 text-sm text-white focus:outline-none focus:border-second transition-colors"
+                />
+              </div>
             </div>
 
-            {/* DATE */}
-            <div className="space-y-2">
-              <label htmlFor="date" className="text-sm font-medium text-black">
-                Date
-              </label>
-              <input
-                type="date"
-                id="date"
-                name="date"
-                required
-                value={formData.date}
-                onChange={handleChange}
-                className="w-full px-4 py-2 bg-white border border-neutral-300 rounded-xl focus:outline-none focus:border-black transition text-black placeholder-neutral-400 [color-scheme:light]"
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* ESTIMASI TANGGAL */}
+              <div className="flex flex-col gap-2">
+                <label className="font-sans text-xs uppercase tracking-widest text-second">
+                  Estimated Wedding Date
+                </label>
+                <input
+                  type="text"
+                  name="weddingDate"
+                  value={formData.weddingDate}
+                  onChange={handleChange}
+                  placeholder="e.g. Q4 2026 / Oct 2026"
+                  className="w-full bg-primary/50 border border-white/10 px-4 py-4 text-sm text-white focus:outline-none focus:border-second transition-colors"
+                />
+              </div>
+
+              {/* ESTIMASI TAMU */}
+              <div className="flex flex-col gap-2">
+                <label className="font-sans text-xs uppercase tracking-widest text-second">
+                  Estimated Guests
+                </label>
+                <input
+                  type="text"
+                  name="guestCount"
+                  value={formData.guestCount}
+                  onChange={handleChange}
+                  placeholder="e.g. 300 - 500 guests"
+                  className="w-full bg-primary/50 border border-white/10 px-4 py-4 text-sm text-white focus:outline-none focus:border-second transition-colors"
+                />
+              </div>
             </div>
 
-            {/* LOCATION */}
-            <div className="space-y-2">
-              <label
-                htmlFor="location"
-                className="text-sm font-medium text-black"
+            {/* PILIH SERVICE */}
+            <div className="flex flex-col gap-2">
+              <label className="font-sans text-xs uppercase tracking-widest text-second">
+                Interested Service
+              </label>
+              <select
+                name="service"
+                value={formData.service}
+                onChange={handleChange}
+                className="w-full bg-primary border border-white/10 px-4 py-4 text-sm text-white focus:outline-none focus:border-second transition-colors cursor-pointer"
               >
-                Location
+                <option value="Full Wedding Planning">
+                  Full Wedding Planning
+                </option>
+                <option value="Wedding Day Management">
+                  Wedding Day Management
+                </option>
+                <option value="Intimate Wedding">Intimate Wedding</option>
+                <option value="Custom Wedding">Custom Wedding</option>
+              </select>
+            </div>
+
+            {/* CATATAN / PESAN */}
+            <div className="flex flex-col gap-2">
+              <label className="font-sans text-xs uppercase tracking-widest text-second">
+                Vision & Notes
               </label>
-              <input
-                type="text"
-                id="location"
-                name="location"
-                required
-                value={formData.location}
+              <textarea
+                name="message"
+                rows="4"
+                value={formData.message}
                 onChange={handleChange}
-                placeholder="Jakarta / Studio / On-location"
-                className="w-full px-4 py-2 bg-white border border-neutral-300 rounded-xl focus:outline-none focus:border-black transition text-black placeholder-neutral-400"
+                placeholder="Tell us about your wedding concept, location, or any specific requests..."
+                className="w-full bg-primary/50 border border-white/10 p-4 text-sm text-white focus:outline-none focus:border-second transition-colors resize-none"
               />
             </div>
-          </div>
 
-          {/* NOTES */}
-          <div className="space-y-2">
-            <label htmlFor="notes" className="text-sm font-medium text-black">
-              Notes
-            </label>
-            <textarea
-              id="notes"
-              name="notes"
-              rows={4}
-              value={formData.notes}
-              onChange={handleChange}
-              placeholder="Tell us more about your ideas or requests..."
-              className="w-full px-4 py-2 bg-white border border-neutral-300 rounded-xl focus:outline-none focus:border-black transition text-black placeholder-neutral-400 resize-none"
-            />
-          </div>
-
-          {/* SUBMIT BUTTON */}
-          <button
-            type="submit"
-            className="w-full py-4 bg-primary text-white font-semibold rounded-xl hover:bg-primary/80 active:scale-[0.99] transition duration-200 flex items-center justify-center gap-2 cursor-pointer"
-          >
-            Send via WhatsApp
-          </button>
-        </motion.form>
+            {/* SUBMIT BUTTON */}
+            <button
+              type="submit"
+              className="w-full py-4 bg-second text-primary font-sans text-xs font-semibold uppercase tracking-[0.2em] hover:bg-white transition-colors duration-300 cursor-pointer"
+            >
+              Send Inquiry via WhatsApp
+            </button>
+          </form>
+        </motion.div>
       </div>
-    </div>
+    </motion.section>
   );
 }

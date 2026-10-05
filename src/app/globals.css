@@ -3,15 +3,22 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --primary: #ff751f;
+  --primary: #101010;
+  --second: #cc9330;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
+  --color-second: var(--second);
 
-  --font-sans: var(--font-montserrat);
+  /* Poppins menjadi font-sans */
+  --font-sans: var(--font-poppins);
+  
+  /* CMU Serif terdaftar sebagai font-serif */
+  --font-serif: var(--font-cmu-serif);
+  
   --font-mono: var(--font-geist-mono);
   --font-geist: var(--font-geist-sans);
 }
@@ -26,5 +33,6 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-montserrat);
+  /* CMU Serif dijadikan font default untuk seluruh halaman */
+  font-family: var(--font-cmu-serif), serif;
 }
