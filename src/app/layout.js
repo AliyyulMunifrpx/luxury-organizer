@@ -37,14 +37,14 @@ const cmuSerif = localFont({
   variable: "--font-cmu-serif",
 });
 
-// === KONSTRUKSI DINAMIS METADATA SEO DARI OBJECT INFORMATION ===
+// === DYNAMIC SEO METADATA CONSTRUCTION FROM INFORMATION OBJECT ===
 const siteName = information.name; // escala.planner
 const city = information.city; // Yogyakarta
 const titleText = `${siteName} — Wedding Planner & Organizer ${city}`;
-const descriptionText = `${siteName} adalah wedding planner & organizer profesional berbasis di ${city}. Kami hadir untuk mewujudkan momen pernikahan impian yang terstruktur, elegan, dan tak terlupakan.`;
+const descriptionText = `${siteName} is a professional wedding planner & organizer based in ${city}. We are dedicated to crafting your dream wedding into a structured, elegant, and unforgettable celebration.`;
 
 export const metadata = {
-  metadataBase: new URL("https://escalaplanner.com"), // Sesuaikan dengan domain production kamu
+  metadataBase: new URL("https://escalaplanner.com"),
   title: {
     default: titleText,
     template: `%s | ${siteName}`,
@@ -57,9 +57,9 @@ export const metadata = {
     "wedding organizer jogja",
     "wedding planner jogja",
     "wo jogja",
-    "jasa wo yogyakarta",
+    `wedding services ${information.city.toLowerCase()}`,
     "intimate wedding jogja",
-    "paket pernikahan yogyakarta",
+    `wedding package ${information.city.toLowerCase()}`,
   ],
   authors: [{ name: siteName }],
   creator: siteName,
@@ -77,7 +77,7 @@ export const metadata = {
     description: descriptionText,
     url: "/",
     siteName: siteName,
-    locale: "id_ID",
+    locale: "en_US",
     type: "website",
     images: [
       {
@@ -106,10 +106,11 @@ export const metadata = {
     },
   },
 };
+
 export default function RootLayout({ children }) {
   return (
     <html
-      lang="id"
+      lang="en"
       className={`
         ${geistSans.variable}
         ${geistMono.variable}
@@ -122,7 +123,7 @@ export default function RootLayout({ children }) {
       <body className="min-h-full flex flex-col bg-primary text-white">
         <Navbar />
 
-        {/* 'overflow-x-hidden' dipasang di main agar aman dari horizontal overflow tanpa memutus scroll window */}
+        {/* 'overflow-x-hidden' is set on main to prevent horizontal overflow without breaking window scroll */}
         <main className="flex-1 overflow-x-hidden">{children}</main>
 
         <Footer id="footer" />

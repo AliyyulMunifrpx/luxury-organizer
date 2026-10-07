@@ -27,7 +27,7 @@ export default function MainSection() {
     <div className="bg-primary h-[100dvh] w-full grid grid-cols-1 lg:grid-cols-3 grid-rows-3 overflow-hidden">
       {/* 1. BACKGROUND IMAGE REVEAL (Delay 0s) */}
       <motion.div
-        className="relative row-start-1 row-end-2 col-start-1 bg-white lg:col-span-full lg:row-span-full overflow-hidden"
+        className="relative row-start-1 row-end-2 mt-16 md:mt-0 col-start-1 bg-white lg:col-span-full lg:row-span-full overflow-hidden"
         initial="hidden"
         animate="visible"
         variants={editorialReveal}
