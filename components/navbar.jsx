@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { information } from "../data/information.js";
+import Image from "next/image.js";
 
 export default function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -44,10 +45,15 @@ export default function Navbar() {
 
           {/* Tengah: Logo */}
           <div className="flex items-center justify-center font-bold text-xl">
-            <Link href="/" className="flex items-center gap-4">
-              <span className="text-2xl font-serif font-normal text-second tracking-wider">
-                {information.name}
-              </span>
+            <Link href="/" className="inline-block">
+              <Image
+                src="/assets/luxury.webp"
+                alt={information.name}
+                width={600}
+                height={600}
+                className="h-12 w-auto object-contain" // Mengatur tinggi tampilan visual di layar (misal 48px) agar proporsional
+                priority
+              />
             </Link>
           </div>
 
@@ -105,8 +111,15 @@ export default function Navbar() {
 
         {/* === BAR TAMPILAN MOBILE (HEADER KECIL) === */}
         <div className="flex md:hidden items-center justify-between w-full">
-          <Link href="/"              className="text-2xl font-serif font-normal text-second tracking-wider">
-            {information.name}{" "}
+          <Link href="/" className="inline-block">
+            <Image
+              src="/assets/luxury.webp"
+              alt={information.name}
+              width={600}
+              height={600}
+              className="h-12 w-auto object-contain" // Mengatur tinggi tampilan visual di layar (misal 48px) agar proporsional
+              priority
+            />
           </Link>
           <button
             onClick={() => setIsMobileOpen(true)}
@@ -133,12 +146,15 @@ export default function Navbar() {
         <div className="fixed inset-0 bg-primary z-50 md:hidden flex flex-col p-4 justify-between overflow-y-auto">
           {/* Header Mobile Fullscreen (Logo & Tombol Close) */}
           <div className="flex items-center justify-between w-full">
-            <Link
-              href="/"
-              onClick={() => setIsMobileOpen(false)}
-              className="text-2xl font-serif font-normal text-second tracking-wider"
-            >
-              {information.name}
+            <Link href="/" className="inline-block">
+              <Image
+                src="/assets/luxury.webp"
+                alt={information.name}
+                width={600}
+                height={600}
+                className="h-12 w-auto object-contain" // Mengatur tinggi tampilan visual di layar (misal 48px) agar proporsional
+                priority
+              />
             </Link>
             <button
               onClick={() => setIsMobileOpen(false)}
